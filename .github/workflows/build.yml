@@ -25,9 +25,13 @@ jobs:
 
       - name: Build
         working-directory: AndUEDumper
-        env:
-          NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
         run: |
+          NDK_BUILD_PATH="$(command -v ndk-build)"
+          if [ -z "$NDK_BUILD_PATH" ]; then
+            echo "ndk-build not found in PATH"
+            exit 1
+          fi
+          export NDK_HOME="$(dirname "$NDK_BUILD_PATH")"
           make
 
       - name: Upload build artifacts
